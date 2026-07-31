@@ -1,0 +1,50 @@
+local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
+
+local Window = Rayfield:CreateWindow({
+   Name = "Lucky Block Hub",
+   LoadingTitle = "Loading Rayfield UI...",
+   LoadingSubtitle = "by Assistant",
+   ConfigurationSaving = {
+      Enabled = false,
+      FolderName = nil,
+      FileName = "LuckyBlockConfig"
+   },
+   Discord = {
+      Enabled = false
+   },
+   KeySystem = false
+})
+
+local Tab = Window:CreateTab("Main", 4483362458) -- แท็บหลัก
+
+-- ดึงข้อมูล Events จาก ReplicatedStorage
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local LuckyBlockEvent = ReplicatedStorage:WaitForChild("SpawnLuckyBlock")
+local GalaxyBlockEvent = ReplicatedStorage:WaitForChild("SpawnGalaxyBlock")
+
+-- ฟังก์ชันสำหรับส่งสัญญาณ Event
+local function triggerEvent(event)
+   if event:IsA("RemoteEvent") then
+      event:FireServer()
+   elseif event:IsA("BindableEvent") then
+      event:Fire()
+   elseif event:IsA("RemoteFunction") then
+      event:InvokeServer()
+   end
+end
+
+-- ปุ่ม Spawn Lucky Block
+Tab:CreateButton({
+   Name = "Spawn Lucky Block",
+   Callback = function()
+      triggerEvent(LuckyBlockEvent)
+   end,
+})
+
+-- ปุ่ม Spawn Galaxy Block
+Tab:CreateButton({
+   Name = "Spawn Galaxy Block",
+   Callback = function()
+      triggerEvent(GalaxyBlockEvent)
+   end,
+})
