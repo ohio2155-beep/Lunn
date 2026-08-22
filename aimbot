@@ -1,0 +1,195 @@
+-- ===== Services =====
+local P,S,R=game:GetService("Players"),game:GetService("UserInputService"),game:GetService("RunService")
+local plr=P.LocalPlayer
+local cam=workspace.CurrentCamera
+
+-- ===== ScreenGui =====
+local gui=Instance.new("ScreenGui",plr:WaitForChild("PlayerGui"))
+gui.Name="ThaiMenu"
+gui.ResetOnSpawn=false
+
+-- ===== Welcome =====
+local wf=Instance.new("Frame",gui)
+wf.Size=UDim2.new(1,0,1,0)
+local wt=Instance.new("TextLabel",wf)
+wt.Size=UDim2.new(1,0,0.3,0)
+wt.Position=UDim2.new(0,0,0.35,0)
+wt.BackgroundTransparency=1
+wt.Text="สวัสดีครับผมชื่อกล้า\nขอบคุณที่มาใช้สคริปนะครับ"
+wt.TextColor3=Color3.new(1,1,1)
+wt.Font=Enum.Font.SourceSansBold
+wt.TextScaled=true
+wt.TextWrapped=true
+local h=0
+local rc=R.RenderStepped:Connect(function(dt)
+    h=(h+dt*50)%360
+    wf.BackgroundColor3=Color3.fromHSV(h/360,1,1)
+end)
+task.delay(5,function()
+    wf.Visible=false
+    rc:Disconnect()
+end)
+
+-- ===== Drag =====
+local function drag(f)
+    local d,s,p
+    f.InputBegan:Connect(function(i)
+        if i.UserInputType==Enum.UserInputType.MouseButton1 or i.UserInputType==Enum.UserInputType.Touch then
+            d=true; s=i.Position; p=f.Position
+        end
+    end)
+    f.InputEnded:Connect(function() d=false end)
+    S.InputChanged:Connect(function(i)
+        if d then
+            local delta=i.Position-s
+            f.Position=UDim2.new(p.X.Scale,p.X.Offset+delta.X,p.Y.Scale,p.Y.Offset+delta.Y)
+        end
+    end)
+end
+
+-- ===== Main Menu =====
+local main=Instance.new("Frame",gui)
+main.Size=UDim2.new(0,250,0,600)
+main.Position=UDim2.new(0,50,0,200)
+main.BackgroundColor3=Color3.fromRGB(30,30,30)
+main.Visible=false
+main.Active=true
+Instance.new("UICorner",main).CornerRadius=UDim.new(0,12)
+Instance.new("UIStroke",main).Color=Color3.fromRGB(0,170,255)
+
+local header=Instance.new("TextLabel",main)
+header.Size=UDim2.new(1,0,0,36)
+header.BackgroundColor3=Color3.fromRGB(20,20,20)
+header.Text="👽 klaตัวตึง"
+header.TextColor3=Color3.new(1,1,1)
+header.Font=Enum.Font.SourceSansBold
+header.TextSize=16
+Instance.new("UICorner",header).CornerRadius=UDim.new(0,12)
+
+drag(main)
+
+-- ===== Button Creator =====
+local function btn(txt,i)
+    local b=Instance.new("TextButton",main)
+    b.Size=UDim2.new(1,-20,0,40)
+    b.Position=UDim2.new(0,10,0,50+(i-1)*50)
+    b.BackgroundColor3=Color3.fromRGB(45,45,45)
+    b.Text=txt
+    b.TextColor3=Color3.new(1,1,1)
+    b.BorderSizePixel=0
+    Instance.new("UICorner",b).CornerRadius=UDim.new(0,8)
+    return b
+end
+
+local noclipBtn=btn("🚶‍♂️ เดินทะลุ : ปิด",1)
+local flyBtn=btn("🕊️ บิน : ปิด",2)
+local jumpBtn=btn("🚀 กระโดดไม่จำกัด : ปิด",3)
+local invisBtn=btn("👻 ล่องหน : ปิด",4)
+local espBtn=btn("👁 ESP : ปิด",5)
+local headLockBtn=btn("🎯 ล็อคหัว : ปิด",6)
+local bodyLockBtn=btn("🎯 ล็อคตัว : ปิด",7)
+local lockAllBtn=btn("🌐 ล็อคทั้งเซิฟ : ปิด",8)
+local hideBtn=btn("❌ ซ่อนเมนู",10)
+
+-- ===== Open Button =====
+local openBtn=Instance.new("TextButton",gui)
+openBtn.Size=UDim2.new(0,120,0,40)
+openBtn.Position=UDim2.new(0,10,0,150)
+openBtn.Text="👉 เปิดเมนู"
+openBtn.TextColor3=Color3.new(1,1,1)
+Instance.new("UICorner",openBtn).CornerRadius=UDim.new(0,10)
+drag(openBtn)
+
+local hue=0
+R.RenderStepped:Connect(function(dt)
+    hue=(hue+dt*50)%360
+    openBtn.BackgroundColor3=Color3.fromHSV(hue/360,1,1)
+end)
+
+openBtn.MouseButton1Click:Connect(function()
+    main.Visible=true
+    openBtn.Visible=false
+end)
+hideBtn.MouseButton1Click:Connect(function()
+    main.Visible=false
+    openBtn.Visible=true
+end)
+
+-- ================= LOCK SYSTEM =================
+local headLock=false
+local bodyLock=false
+local lockAll=false
+local targets={}
+local index=1
+
+local function visible(part)
+    local params=RaycastParams.new()
+    params.FilterType=Enum.RaycastFilterType.Blacklist
+    params.FilterDescendantsInstances={plr.Character}
+    local ray=workspace:Raycast(cam.CFrame.Position,part.Position-cam.CFrame.Position,params)
+    return ray and ray.Instance:IsDescendantOf(part.Parent)
+end
+
+headLockBtn.MouseButton1Click:Connect(function()
+    headLock=not headLock
+    bodyLock=false
+    lockAll=false
+    headLockBtn.Text=headLock and "🎯 ล็อคหัว : เปิด" or "🎯 ล็อคหัว : ปิด"
+    bodyLockBtn.Text="🎯 ล็อคตัว : ปิด"
+    lockAllBtn.Text="🌐 ล็อคทั้งเซิฟ : ปิด"
+end)
+
+bodyLockBtn.MouseButton1Click:Connect(function()
+    bodyLock=not bodyLock
+    headLock=false
+    lockAll=false
+    bodyLockBtn.Text=bodyLock and "🎯 ล็อคตัว : เปิด" or "🎯 ล็อคตัว : ปิด"
+    headLockBtn.Text="🎯 ล็อคหัว : ปิด"
+    lockAllBtn.Text="🌐 ล็อคทั้งเซิฟ : ปิด"
+end)
+
+lockAllBtn.MouseButton1Click:Connect(function()
+    lockAll=not lockAll
+    headLock=false
+    bodyLock=false
+    lockAllBtn.Text=lockAll and "🌐 ล็อคทั้งเซิฟ : เปิด" or "🌐 ล็อคทั้งเซิฟ : ปิด"
+    headLockBtn.Text="🎯 ล็อคหัว : ปิด"
+    bodyLockBtn.Text="🎯 ล็อคตัว : ปิด"
+end)
+
+R.RenderStepped:Connect(function()
+    if lockAll then
+        targets={}
+        for _,p in pairs(P:GetPlayers()) do
+            if p~=plr and p.Character then
+                local h=p.Character:FindFirstChild("Head")
+                local hum=p.Character:FindFirstChildOfClass("Humanoid")
+                if h and hum and hum.Health>0 and visible(h) then
+                    table.insert(targets,h)
+                end
+            end
+        end
+        if #targets>0 then
+            if index>#targets then index=1 end
+            cam.CFrame=CFrame.new(cam.CFrame.Position,targets[index].Position)
+            index+=1
+        end
+    elseif headLock or bodyLock then
+        local closest,dist=nil,math.huge
+        for _,p in pairs(P:GetPlayers()) do
+            if p~=plr and p.Character then
+                local hum=p.Character:FindFirstChildOfClass("Humanoid")
+                if hum and hum.Health>0 then
+                    local part=headLock and p.Character:FindFirstChild("Head") or p.Character:FindFirstChild("HumanoidRootPart")
+                    if part and visible(part) then
+                        local d=(cam.CFrame.Position-part.Position).Magnitude
+                        if d<dist then dist=d closest=part end
+                    end
+                end
+            end
+        end
+        if closest then
+            cam.CFrame=CFrame.new(cam.CFrame.Position,closest.Position)
+        end
+    end
+end)
