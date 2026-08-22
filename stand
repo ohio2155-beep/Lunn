@@ -1,0 +1,287 @@
+local CoreGui = game:GetService("CoreGui")
+local UserInputService = game:GetService("UserInputService")
+
+-- ลบ GUI เก่าถ้ามีอยู่
+if CoreGui:FindFirstChild("HackerExecutorGUI") then
+    CoreGui.HackerExecutorGUI:Destroy()
+end
+
+-- 📦 สร้าง ScreenGui
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Name = "HackerExecutorGUI"
+ScreenGui.Parent = CoreGui
+ScreenGui.ResetOnSpawn = false
+
+-- 🔑 --- KEY SYSTEM POPUP --- 🔑
+local KeyFrame = Instance.new("Frame")
+local KeyUICorner = Instance.new("UICorner")
+local KeyUIStroke = Instance.new("UIStroke")
+local KeyTitle = Instance.new("TextLabel")
+local KeyHint = Instance.new("TextLabel")
+local KeyTextBox = Instance.new("TextBox")
+local KeySubmitBtn = Instance.new("TextButton")
+local KeyBtnCorner = Instance.new("UICorner")
+
+KeyFrame.Name = "KeyFrame"
+KeyFrame.Parent = ScreenGui
+KeyFrame.BackgroundColor3 = Color3.fromRGB(10, 10, 12)
+KeyFrame.Position = UDim2.new(0.5, -160, 0.4, -100)
+KeyFrame.Size = UDim2.new(0, 320, 0, 200)
+KeyFrame.Active = true
+KeyFrame.Draggable = true
+
+KeyUICorner.CornerRadius = UDim.new(0, 4)
+KeyUICorner.Parent = KeyFrame
+
+KeyUIStroke.Parent = KeyFrame
+KeyUIStroke.Color = Color3.fromRGB(0, 255, 120)
+KeyUIStroke.Thickness = 1.5
+
+KeyTitle.Parent = KeyFrame
+KeyTitle.Size = UDim2.new(1, 0, 0, 40)
+KeyTitle.Font = Enum.Font.Code
+KeyTitle.Text = "[ SYSTEM ACCESS : KEY REQUIRED ]"
+KeyTitle.TextColor3 = Color3.fromRGB(0, 255, 120)
+KeyTitle.TextSize = 13.000
+KeyTitle.BackgroundTransparency = 1
+
+KeyHint.Parent = KeyFrame
+KeyHint.Position = UDim2.new(0, 10, 0, 40)
+KeyHint.Size = UDim2.new(1, -20, 0, 30)
+KeyHint.Font = Enum.Font.Code
+KeyHint.Text = "HINT: Key is 'กล้าคนหล่อ'"
+KeyHint.TextColor3 = Color3.fromRGB(120, 120, 120)
+KeyHint.TextSize = 11.000
+KeyHint.BackgroundTransparency = 1
+
+KeyTextBox.Parent = KeyFrame
+KeyTextBox.Position = UDim2.new(0.1, 0, 0.42, 0)
+KeyTextBox.Size = UDim2.new(0.8, 0, 0, 35)
+KeyTextBox.BackgroundColor3 = Color3.fromRGB(18, 18, 22)
+KeyTextBox.Font = Enum.Font.Code
+KeyTextBox.PlaceholderText = "ENTER KEY HERE..."
+KeyTextBox.Text = ""
+KeyTextBox.TextColor3 = Color3.fromRGB(0, 255, 120)
+KeyTextBox.TextSize = 12.000
+
+local KeyBoxCorner = Instance.new("UICorner")
+KeyBoxCorner.CornerRadius = UDim.new(0, 4)
+KeyBoxCorner.Parent = KeyTextBox
+
+local KeyBoxStroke = Instance.new("UIStroke")
+KeyBoxStroke.Parent = KeyTextBox
+KeyBoxStroke.Color = Color3.fromRGB(40, 40, 50)
+KeyBoxStroke.Thickness = 1
+
+KeySubmitBtn.Parent = KeyFrame
+KeySubmitBtn.Position = UDim2.new(0.2, 0, 0.72, 0)
+KeySubmitBtn.Size = UDim2.new(0.6, 0, 0, 35)
+KeySubmitBtn.BackgroundColor3 = Color3.fromRGB(0, 200, 90)
+KeySubmitBtn.Font = Enum.Font.Code
+KeySubmitBtn.Text = "AUTHENTICATE"
+KeySubmitBtn.TextColor3 = Color3.fromRGB(0, 0, 0)
+KeySubmitBtn.TextSize = 12.000
+
+KeyBtnCorner.CornerRadius = UDim.new(0, 4)
+KeyBtnCorner.Parent = KeySubmitBtn
+
+
+-- 💻 --- MAIN EXECUTOR FRAME --- 💻
+local MainFrame = Instance.new("Frame")
+local MainUICorner = Instance.new("UICorner")
+local MainUIStroke = Instance.new("UIStroke")
+local Title = Instance.new("TextLabel")
+local TextBox = Instance.new("TextBox")
+local TextUICorner = Instance.new("UICorner")
+local TextUIStroke = Instance.new("UIStroke")
+
+MainFrame.Name = "MainFrame"
+MainFrame.Parent = ScreenGui
+MainFrame.BackgroundColor3 = Color3.fromRGB(10, 10, 12)
+MainFrame.Position = UDim2.new(0.35, 0, 0.25, 0)
+MainFrame.Size = UDim2.new(0, 440, 0, 340)
+MainFrame.Active = true
+MainFrame.Draggable = true
+MainFrame.Visible = false
+
+MainUICorner.CornerRadius = UDim.new(0, 4)
+MainUICorner.Parent = MainFrame
+
+MainUIStroke.Parent = MainFrame
+MainUIStroke.Color = Color3.fromRGB(0, 255, 120)
+MainUIStroke.Thickness = 1.5
+
+-- หัวข้อเมนู
+Title.Name = "Title"
+Title.Parent = MainFrame
+Title.Size = UDim2.new(1, 0, 0, 40)
+Title.Font = Enum.Font.Code
+Title.Text = "ROOT@EXECUTOR:~# SCRIPT_RUNNER"
+Title.TextColor3 = Color3.fromRGB(0, 255, 120)
+Title.TextSize = 13.000
+Title.TextXAlignment = Enum.TextXAlignment.Left
+Title.Position = UDim2.new(0, 15, 0, 0)
+Title.BackgroundTransparency = 1
+
+-- ช่องใส่สคริปต์
+TextBox.Parent = MainFrame
+TextBox.BackgroundColor3 = Color3.fromRGB(15, 15, 18)
+TextBox.Position = UDim2.new(0.04, 0, 0.14, 0)
+TextBox.Size = UDim2.new(0.92, 0, 0.50, 0)
+TextBox.Font = Enum.Font.Code
+TextBox.PlaceholderText = "-- Input payload / Lua code here..."
+TextBox.Text = ""
+TextBox.TextColor3 = Color3.fromRGB(0, 255, 120)
+TextBox.TextSize = 12.000
+TextBox.TextXAlignment = Enum.TextXAlignment.Left
+TextBox.TextYAlignment = Enum.TextYAlignment.Top
+TextBox.ClearTextOnFocus = false
+TextBox.MultiLine = true
+
+TextUICorner.CornerRadius = UDim.new(0, 4)
+TextUICorner.Parent = TextBox
+
+TextUIStroke.Parent = TextBox
+TextUIStroke.Color = Color3.fromRGB(30, 30, 40)
+TextUIStroke.Thickness = 1
+
+-- ฟังก์ชันสร้างปุ่มสไตล์แฮกเกอร์
+local function createHackerButton(name, text, pos, size, bgColor, textColor)
+    local btn = Instance.new("TextButton")
+    local corner = Instance.new("UICorner")
+    local stroke = Instance.new("UIStroke")
+    
+    btn.Name = name
+    btn.Parent = MainFrame
+    btn.BackgroundColor3 = bgColor
+    btn.Position = pos
+    btn.Size = size
+    btn.Font = Enum.Font.Code
+    btn.Text = text
+    btn.TextColor3 = textColor
+    btn.TextSize = 11.000
+    
+    corner.CornerRadius = UDim.new(0, 4)
+    corner.Parent = btn
+    
+    stroke.Parent = btn
+    stroke.Color = textColor
+    stroke.Thickness = 1
+    
+    return btn
+end
+
+-- สร้างปุ่มสไตล์เข้มข้น
+local ExecOnceBtn = createHackerButton("ExecOnce", "EXECUTE (1X)", UDim2.new(0.04, 0, 0.68, 0), UDim2.new(0.44, 0, 0.12, 0), Color3.fromRGB(15, 25, 20), Color3.fromRGB(0, 255, 120))
+local Exec1000xBtn = createHackerButton("Exec1000x", "PARALLEL (1000X)", UDim2.new(0.52, 0, 0.68, 0), UDim2.new(0.44, 0, 0.12, 0), Color3.fromRGB(30, 15, 15), Color3.fromRGB(255, 60, 60))
+
+local LoopBtn = createHackerButton("LoopBtn", "LOOP (10X / 0.01s)", UDim2.new(0.04, 0, 0.82, 0), UDim2.new(0.38, 0, 0.12, 0), Color3.fromRGB(15, 20, 30), Color3.fromRGB(0, 180, 255))
+local StopBtn = createHackerButton("StopBtn", "STOP LOOP", UDim2.new(0.45, 0, 0.82, 0), UDim2.new(0.24, 0, 0.12, 0), Color3.fromRGB(25, 20, 15), Color3.fromRGB(255, 170, 0))
+local ClearBtn = createHackerButton("ClearBtn", "CLEAR", UDim2.new(0.72, 0, 0.82, 0), UDim2.new(0.24, 0, 0.12, 0), Color3.fromRGB(20, 20, 25), Color3.fromRGB(180, 180, 180))
+
+-- 🔘 ปุ่มเปิด-ปิด เมนูลอย (Toggle Button)
+local ToggleBtn = Instance.new("TextButton")
+local ToggleCorner = Instance.new("UICorner")
+local ToggleStroke = Instance.new("UIStroke")
+
+ToggleBtn.Name = "ToggleBtn"
+ToggleBtn.Parent = ScreenGui
+ToggleBtn.BackgroundColor3 = Color3.fromRGB(10, 10, 12)
+ToggleBtn.Position = UDim2.new(0.02, 0, 0.2, 0)
+ToggleBtn.Size = UDim2.new(0, 90, 0, 32)
+ToggleBtn.Font = Enum.Font.Code
+ToggleBtn.Text = "[ UI TOGGLE ]"
+ToggleBtn.TextColor3 = Color3.fromRGB(0, 255, 120)
+ToggleBtn.TextSize = 10.000
+ToggleBtn.Active = true
+ToggleBtn.Draggable = true
+ToggleBtn.Visible = false
+
+ToggleCorner.CornerRadius = UDim.new(0, 4)
+ToggleCorner.Parent = ToggleBtn
+
+ToggleStroke.Parent = ToggleBtn
+ToggleStroke.Color = Color3.fromRGB(0, 255, 120)
+ToggleStroke.Thickness = 1
+
+---------------------------------------------------------
+-- ระบบการทำงาน (Logic)
+---------------------------------------------------------
+
+local isLooping = false
+
+local function runScript(code)
+    if code and code ~= "" then
+        local func, err = loadstring(code)
+        if func then
+            task.spawn(func)
+        else
+            warn("[SYSTEM ERROR]:", err)
+        end
+    end
+end
+
+-- ยืนยัน Key
+KeySubmitBtn.MouseButton1Click:Connect(function()
+    if KeyTextBox.Text == "กล้าคนหล่อ" then
+        KeyFrame:Destroy()
+        MainFrame.Visible = true
+        ToggleBtn.Visible = true
+    else
+        KeyTextBox.Text = ""
+        KeyTextBox.PlaceholderText = "ACCESS DENIED: INVALID KEY"
+    end
+end)
+
+-- กดปุ่ม รันปกติ
+ExecOnceBtn.MouseButton1Click:Connect(function()
+    runScript(TextBox.Text)
+end)
+
+-- กดปุ่ม รันพร้อมกัน 1,000 ครั้งทันที
+Exec1000xBtn.MouseButton1Click:Connect(function()
+    if TextBox.Text ~= "" then
+        local func = loadstring(TextBox.Text)
+        if func then
+            for i = 1, 1000 do
+                task.spawn(func)
+            end
+        end
+    end
+end)
+
+-- ⚡ กดปุ่ม Loop (รัน 10 ครั้ง ทุกๆ 0.01 วินาที)
+LoopBtn.MouseButton1Click:Connect(function()
+    if isLooping then return end
+    isLooping = true
+    
+    task.spawn(function()
+        while isLooping do
+            if TextBox.Text ~= "" then
+                local func = loadstring(TextBox.Text)
+                if func then
+                    -- ยิงการทำงานพร้อมกัน 10 ครั้ง
+                    for i = 1, 10 do
+                        task.spawn(func)
+                    end
+                end
+            end
+            task.wait(0.01) -- ระยะเวลาหน่วง 0.01 วินาที
+        end
+    end)
+end)
+
+-- กดปุ่ม หยุด Loop
+StopBtn.MouseButton1Click:Connect(function()
+    isLooping = false
+end)
+
+-- กดปุ่ม เคลียร์โค้ด
+ClearBtn.MouseButton1Click:Connect(function()
+    TextBox.Text = ""
+end)
+
+-- กดปุ่ม เปิด/ปิด เมนู
+ToggleBtn.MouseButton1Click:Connect(function()
+    MainFrame.Visible = not MainFrame.Visible
+end)
